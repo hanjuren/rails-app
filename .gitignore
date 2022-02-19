@@ -30,3 +30,5 @@
 
 # ignore database volume directory
 /psql/
+/log/
+/tmp/
