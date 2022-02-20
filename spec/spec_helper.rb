@@ -92,3 +92,17 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+#
+# rspec function
+#
+
+def req(path, user = nil)
+  "/api/#{DefaultController.version}#{path}"
+end
+
+def res
+  res = JSON.parse(response.body)
+  res.deep_symbolize_keys! if res.is_a? Hash
+  res
+end
