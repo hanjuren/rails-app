@@ -20,5 +20,10 @@ class UserApi < BaseApi
     post do
       User.create(post_params)
     end
+
+    # POST /api/v1/users/regist
+    post 'regist' do
+      User.regist_user(post_params)
+    end
   end
 end

@@ -29,4 +29,18 @@ RSpec.describe 'UserApi' do
       expect(response.status).to eq(201)
     end
   end
+  # POST /api/v1/users/regist
+  describe 'POST /api/v1/users/regist' do
+    it do
+      post req('/users/regist'), params: {
+        email: 'juren52@hanmail.net',
+        password: 'test',
+        name: 'test_user',
+        nick_name: 'test',
+        age: 26,
+        gender: 'man'
+      }
+      pp res
+    end
+  end
 end
