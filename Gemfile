@@ -53,6 +53,7 @@ end
 
 # grape
 gem 'grape'
+gem 'grape-entity'
 # jwt
 gem 'jwt'
 

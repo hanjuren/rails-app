@@ -1,4 +1,4 @@
-require 'users/user_api' # UserApi
+require 'user_controller/user_api' # UserApi
 
 class DefaultController < BaseApi
   version 'v1', using: :path
@@ -9,5 +9,5 @@ class DefaultController < BaseApi
     "rails server run #{server_port} port"
   end
 
-  mount UserApi
+  mount UserController::UserApi
 end
