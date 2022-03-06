@@ -1,7 +1,8 @@
+include BCrypt
 FactoryBot.define do
   factory :user, aliases: [:author] do
     email { "test@gmail.com" }
-    password { "test01" }
+    password { Password.create("test") }
     access_token { nil }
     refresh_token { nil }
     name { "test_user01" }
@@ -18,3 +19,5 @@ FactoryBot.define do
     user_id { FactoryBot.create(:user).id }
   end
 end
+
+
