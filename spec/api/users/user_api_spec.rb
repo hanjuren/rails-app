@@ -11,6 +11,7 @@ RSpec.describe 'UserApi' do
           headers: { 'Authorization' => "Bearer #{token}"}
       expect(response.status).to eq(401)
     end
+
     it '' do
       payload = { id: user.id, exp: 5.minute.from_now.to_i }
       token = JWT.encode(payload, ENV['JWT_SECRET'])
@@ -18,7 +19,8 @@ RSpec.describe 'UserApi' do
           headers: { 'Authorization' => "Bearer #{token}"}
       expect(response.status).to eq(200)
     end
-  end
+  end # describe 'GET /api/v1/users/all'
+
   # POST /api/v1/users
   describe 'POST /api/v1/users' do
     it do
@@ -32,7 +34,8 @@ RSpec.describe 'UserApi' do
       }
       expect(response.status).to eq(201)
     end
-  end
+  end # describe 'POST /api/v1/users'
+
   # POST /api/v1/users/regist
   describe 'POST /api/v1/users/regist' do
     it do
@@ -46,7 +49,7 @@ RSpec.describe 'UserApi' do
       }
       pp res
     end
-  end
+  end # describe 'POST /api/v1/users/regist'
 
   describe 'POST /api/v1/users/sign_in' do
     before do
@@ -73,5 +76,31 @@ RSpec.describe 'UserApi' do
       expect(res[:access_token].present?).to be_truthy
       expect(res[:refresh_token].present?).to be_truthy
     end
-  end
+  end #   describe 'POST /api/v1/users/sign_in'
+
+  describe 'PUT /api/v1/users/:user_id' do
+    let(:user) {
+      post req('/users/regist'), params: { email: 'test@hanmail.net', password: '1234', name: 'test_user', nick_name: 'test', age: 26, gender: 'man' }
+      User.find(res[:id])
+    }
+    let(:another_user) { FactoryBot.create(:user) }
+    let(:attrs) {
+      {
+        email: 'test@naver.com',
+        name: 'test',
+        nick_name: 'test1',
+        age: 26,
+        gender: 'man',
+      }
+    }
+    it 'no jwt-token in headers' do
+      put req("/users/#{user.id}"), params: attrs
+      expect(response.status).to eq(401)
+    end
+
+    it 'Forbidden Error' do
+      put req("/users/#{another_user.id}"), params: attrs, headers: { 'Authorization' => "Bearer #{user.access_token}" }
+      pp res
+    end
+  end # describe 'PUT /api/v1/users/:user_id'
 end

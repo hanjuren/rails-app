@@ -24,8 +24,14 @@ class BaseApi < Grape::API
     end
 
     def authenticated_user
+      # 뭔가 잘못된듯 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
       token = decoded_jwt_token.first.symbolize_keys!
       @authenticated_user ||= User.find(token[:id])
+    end
+
+    def current_user
+      token = decoded_jwt_token.first.symbolize_keys!
+      @current_user ||= User.find(token[:id])
     end
   end
 end
