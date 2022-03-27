@@ -15,7 +15,7 @@ services:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
-      - "3000:3000"
+      - "1000:3000"
     env_file: docker-compose.env
     volumes:
       - ./:/usr/src/app

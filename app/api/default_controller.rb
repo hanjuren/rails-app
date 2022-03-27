@@ -1,4 +1,5 @@
 require 'user_controller/user_api' # UserApi
+require 'post_controller/post_api' # PostApi
 
 class DefaultController < BaseApi
   version 'v1', using: :path
@@ -10,4 +11,5 @@ class DefaultController < BaseApi
   end
 
   mount UserController::UserApi
+  mount PostController::PostApi
 end
