@@ -1,5 +1,17 @@
 include BCrypt
 FactoryBot.define do
+  factory :publisher do
+    
+  end
+
+  factory :book do
+    
+  end
+
+  factory :create_model_user do
+    
+  end
+
   factory :user, aliases: [:author] do
     email { "test@gmail.com" }
     password { Password.create("test") }
