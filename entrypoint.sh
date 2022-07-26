@@ -1,8 +1,18 @@
 #!/bin/bash
 set -e
 
-# Remove a potentially pre-existing server.pid for Rails.
-rm -f /myapp/tmp/pids/server.pid
+APP_PATH="/usr/src/app"
 
-# Then exec the container's main process (what's set as CMD in the Dockerfile).
+# 임시 파일 제거
+echo "Cleaning temp files"
+rm -rf $APP_PATH/tmp/pids/server.pid
+echo "done"
+
+# first install
+#echo "Rails database setting"
+#rails db:create
+#rails db:migrate
+
+echo "Rails database setting done"
+
 exec "$@"
