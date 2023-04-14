@@ -94,7 +94,9 @@ RSpec.configure do |config|
 end
 
 # TODO 여기에 테스트에서 사용할 메서드 생성 가능
-#
-def api(path, current_user = nil)
-  "path"
+
+def json_response
+  body = JSON.parse(response.body)
+  body.deep_symbolize_keys! if body.is_a?(Hash)
+  body
 end
