@@ -12,6 +12,8 @@ Rails.application.routes.draw do
       scope :auth do
         post "/sign_up", to: "authenticate#sign_up"
         post "/sign_in", to: "authenticate#sign_in"
+        get "/kakao_login", to: "authenticate#kakao_login"
+        get "/kakao-callback", to: "authenticate#kakao_callback"
       end
     end
   end

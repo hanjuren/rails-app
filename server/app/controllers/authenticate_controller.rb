@@ -1,3 +1,5 @@
+require 'rest-client'
+
 class AuthenticateController < ApplicationController
   def sign_up
     exists = User.exists?(email: params[:email])
@@ -24,28 +26,111 @@ class AuthenticateController < ApplicationController
   def sign_in
     user = User.find_by_email(params[:email])
 
-    result = {}
-    if user.present?
-      if user.valid_password?(params[:password])
-        ip = request.remote_ip
-        user.after_sign_in(ip)
-
-        status = :created
-        result = {
-          status: "SUCCESS",
-          message: "Sign-In success",
-          data: UserSerializer.new(user),
-        }
-      else
-        status = :unauthorized
-        result = { status: "FAIL", message: "Password does not match." }
-      end
-    else
-      status = :not_found
-      result = { status: "FAIL", message: "Record not found" }
+    unless user
+      return render(
+        json: { message: "Record not found." },
+        status: :not_found,
+      )
     end
 
+    valid = user.valid_password?(params[:password])
+    unless valid
+      return render(
+        json: { message: "Password does not match." },
+        status: :unauthorized,
+      )
+    end
 
-    render json: result, status: status
+    ip = request.remote_ip
+    user.after_sign_in(ip)
+
+    render(
+      json: UserSerializer.new(user).serializable_hash,
+      status: :created,
+    )
+  end
+
+  def kakao_login
+    Rails.logger.info("---------------------------\n\n\n\n")
+    Rails.logger.info(params)
+    Rails.logger.info("\n\n\n\n---------------------------")
+    url = get_authorize_url
+
+    redirect_to url, allow_other_host: true
+  end
+
+  def kakao_callback
+    Rails.logger.info("---------------------------\n\n\n\n")
+    Rails.logger.info(params)
+    Rails.logger.info("\n\n\n\n---------------------------")
+    code = params[:code]
+
+    tokens = get_kakao_token(code)
+    data = get_me(tokens[:access_token])
+
+    redirect_to "http://localhost:8080", allow_other_host: true
+  end
+
+  private
+  def get_authorize_url
+    payload = {
+      client_id: "304eb08fa8bf41613f2c9b6aece62720",
+      redirect_uri: "http://localhost:3000/api/v1/auth/kakao-callback",
+      response_type: "code",
+    }
+    query = URI.encode_www_form(payload)
+
+    "https://kauth.kakao.com/oauth/authorize?#{query}"
+  end
+
+  def get_kakao_token(code)
+    url = "https://kauth.kakao.com/oauth/token"
+    payload = {
+      grant_type: "authorization_code",
+      client_id: "304eb08fa8bf41613f2c9b6aece62720",
+      redirect_uri: "http://localhost:3000/api/v1/auth/kakao-callback",
+      code: code,
+      client_secret: "n1OpK03cwEMKbfjCphzQZFuRZXcJ9FDr",
+    }
+    headers = { "content-type" => "application/x-www-form-urlencoded;charset=utf-8" }
+
+    begin
+      res = RestClient.post(
+        url,
+        payload,
+        headers,
+      )
+      body = JSON.parse(res.body)
+
+      {
+        access_token: body["access_token"],
+        refresh_token: body["refresh_token"],
+      }
+    rescue => e
+      Rails.logger.info(e)
+    end
+  end
+
+  def get_me(access_token)
+    url = "https://kapi.kakao.com/v2/user/me"
+    Rails.logger.info("---------------------------\n\n\n\n")
+    Rails.logger.info(access_token)
+    Rails.logger.info("\n\n\n\n---------------------------")
+    headers = {
+      "authorization" => "Bearer #{access_token}",
+    }
+
+    begin
+      res = RestClient.post(url, {}, headers)
+      body = JSON.parse(res.body)
+
+      Rails.logger.info("---------------------------\n\n\n\n")
+      Rails.logger.info(body)
+      Rails.logger.info("\n\n\n\n---------------------------")
+
+      body
+    rescue => e
+      Rails.logger.info(e)
+    end
   end
 end

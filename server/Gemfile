@@ -52,4 +52,6 @@ end
 
 gem 'devise'
 
-gem 'fast_jsonapi'
+gem 'jsonapi-serializer'
+
+gem 'rest-client'

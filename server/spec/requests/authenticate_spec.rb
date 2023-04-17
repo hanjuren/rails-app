@@ -28,6 +28,9 @@ RSpec.describe "Authenticate", type: :request do
   describe 'POST /auth/sign_in' do
     before do
       post "/api/v1/auth/sign_up", params: { email: "juren52@naver.com", password: "test1234!@" }
+      post "/api/v1/auth/sign_up", params: { email: "juren12@naver.com", password: "test1234!@" }
+      post "/api/v1/auth/sign_up", params: { email: "juren22@naver.com", password: "test1234!@" }
+      post "/api/v1/auth/sign_up", params: { email: "juren32@naver.com", password: "test1234!@" }
     end
 
     it 'Cannot find user with email.' do
@@ -43,6 +46,12 @@ RSpec.describe "Authenticate", type: :request do
     it 'Sign-in' do
       post "/api/v1/auth/sign_in", params: { email: "juren52@naver.com", password: "test1234!@" }
       pp json_response
+    end
+  end
+
+  describe 'POST /auth/kakao_login' do
+    it '' do
+      get "/api/v1/auth/kakao_login"
     end
   end
 end
