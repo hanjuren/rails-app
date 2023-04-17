@@ -51,22 +51,24 @@ class AuthenticateController < ApplicationController
   end
 
   def kakao_login
-    Rails.logger.info("---------------------------\n\n\n\n")
+    Rails.logger.info("kakao login---------------------------\n\n\n\n")
     Rails.logger.info(params)
-    Rails.logger.info("\n\n\n\n---------------------------")
     url = get_authorize_url
+    Rails.logger.info(url)
+
+    Rails.logger.info("\n\n\n\n---------------------------")
 
     redirect_to url, allow_other_host: true
   end
 
   def kakao_callback
-    Rails.logger.info("---------------------------\n\n\n\n")
-    Rails.logger.info(params)
-    Rails.logger.info("\n\n\n\n---------------------------")
     code = params[:code]
 
     tokens = get_kakao_token(code)
     data = get_me(tokens[:access_token])
+    Rails.logger.info("callback---------------------------\n\n\n\n")
+    Rails.logger.info(data)
+    Rails.logger.info("\n\n\n\n---------------------------")
 
     redirect_to "http://localhost:8080", allow_other_host: true
   end
@@ -113,9 +115,6 @@ class AuthenticateController < ApplicationController
 
   def get_me(access_token)
     url = "https://kapi.kakao.com/v2/user/me"
-    Rails.logger.info("---------------------------\n\n\n\n")
-    Rails.logger.info(access_token)
-    Rails.logger.info("\n\n\n\n---------------------------")
     headers = {
       "authorization" => "Bearer #{access_token}",
     }
@@ -123,10 +122,6 @@ class AuthenticateController < ApplicationController
     begin
       res = RestClient.post(url, {}, headers)
       body = JSON.parse(res.body)
-
-      Rails.logger.info("---------------------------\n\n\n\n")
-      Rails.logger.info(body)
-      Rails.logger.info("\n\n\n\n---------------------------")
 
       body
     rescue => e

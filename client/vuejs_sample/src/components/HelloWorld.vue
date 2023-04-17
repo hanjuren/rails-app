@@ -28,30 +28,37 @@
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
     <div class="kakao-login">
-        <button class="kakao-btn" v-on:click="kakao_login">카카오 로그인</button>
+        <a :href="kakaoLoginLink" class="kakao-btn">카카오 로그인</a>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-
+// import axios from "axios";
 export default {
   name: 'HelloWorld',
+  data: () => ({
+    client_id: "304eb08fa8bf41613f2c9b6aece62720",
+    redirect_uri: "http://localhost:3000/api/v1/auth/kakao-callback",
+  }),
   props: {
-    msg: String
+    msg: String,
+  },
+  computed: {
+    kakaoLoginLink() {
+      return `https://kauth.kakao.com/oauth/authorize?client_id=${this.client_id}&redirect_uri=${this.redirect_uri}&response_type=code`;
+    }
   },
   methods: {
-      kakao_login: async function () {
-          console.log(this);
-          try {
-              const url = "http://localhost:3000/api/v1/auth/kakao_login";
-              const res = await axios.get(url);
-              console.log(res.data);
-          } catch (e) {
-              console.log(e.message);
-          }
-      }
+      // kakao_login: function () {
+      //     console.log(this);
+      //     try {
+      //         const url = "http://localhost:3000/api/v1/auth/kakao_login";
+      //         axios.get(url);
+      //     } catch (e) {
+      //         console.log(e.message);
+      //     }
+      // }
   }
 }
 </script>
