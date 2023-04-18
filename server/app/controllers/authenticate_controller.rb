@@ -51,46 +51,24 @@ class AuthenticateController < ApplicationController
   end
 
   def kakao_login
-    Rails.logger.info("kakao login---------------------------\n\n\n\n")
-    Rails.logger.info(params)
-    url = get_authorize_url
-    Rails.logger.info(url)
-
-    Rails.logger.info("\n\n\n\n---------------------------")
-
-    redirect_to url, allow_other_host: true
-  end
-
-  def kakao_callback
     code = params[:code]
-
     tokens = get_kakao_token(code)
-    data = get_me(tokens[:access_token])
-    Rails.logger.info("callback---------------------------\n\n\n\n")
-    Rails.logger.info(data)
-    Rails.logger.info("\n\n\n\n---------------------------")
+    Rails.logger.info(tokens)
 
-    redirect_to "http://localhost:8080", allow_other_host: true
+    data = get_me(tokens[:access_token])
+    Rails.logger.info(data)
+
+
+    render json: data
   end
 
   private
-  def get_authorize_url
-    payload = {
-      client_id: "304eb08fa8bf41613f2c9b6aece62720",
-      redirect_uri: "http://localhost:3000/api/v1/auth/kakao-callback",
-      response_type: "code",
-    }
-    query = URI.encode_www_form(payload)
-
-    "https://kauth.kakao.com/oauth/authorize?#{query}"
-  end
-
   def get_kakao_token(code)
     url = "https://kauth.kakao.com/oauth/token"
     payload = {
       grant_type: "authorization_code",
       client_id: "304eb08fa8bf41613f2c9b6aece62720",
-      redirect_uri: "http://localhost:3000/api/v1/auth/kakao-callback",
+      redirect_uri: "http://localhost:8080/auth/kakao-callback",
       code: code,
       client_secret: "n1OpK03cwEMKbfjCphzQZFuRZXcJ9FDr",
     }
@@ -109,7 +87,9 @@ class AuthenticateController < ApplicationController
         refresh_token: body["refresh_token"],
       }
     rescue => e
-      Rails.logger.info(e)
+
+      Rails.logger.info(e.message)
+      Rails.logger.info('에러임')
     end
   end
 
