@@ -1,7 +1,7 @@
 <template>
   <div>
     <button type="button" id="kakao-btn" v-on:click="kakaoLogin">
-      <img src="../assets/kakao_login_medium_narrow.png"/>
+      <img src="../assets/kakao_login_medium_narrow.png" alt="#"/>
     </button>
   </div>
 </template>

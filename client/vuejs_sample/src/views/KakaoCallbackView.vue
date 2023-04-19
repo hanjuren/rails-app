@@ -5,53 +5,35 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
-  data() {
+  data: () => {
     return {
       authorize_code: ""
     }
   },
   created() {
-    this.authorize_code = this.$route.query.code
-
     this.getCodeToToken();
   },
   methods: {
     getCodeToToken: function() {
+      this.authorize_code = this.$route.query.code
       console.log("hello world")
       console.log(this.authorize_code);
-      axios.get("http://localhost:3000/api/v1/meta", { "code": this.authorize_code })
-          .then((res) => {
-            console.log(res.data)
-          })
-          .catch((err) => {
-            console.log(err)
-          })
 
-      const url = "http://localhost:3000/api/v1/auth/kakao_login"
+      const url = "/api/v1/auth/kakao_login";
       const params = {
-        code: this.authorize_code,
+          code: this.authorize_code,
+          redirect_uri: 'http://localhost:8080/auth/kakao-callback'
       }
-
-      axios.post(
-          url,
-          params,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-      )
-          .then((res) => {
-            console.log(res.data)
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+      this.$axios.post(url, params)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     }
-  }
+  },
 }
 </script>
 
