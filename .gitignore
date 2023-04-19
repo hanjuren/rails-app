@@ -2,3 +2,4 @@
 /data/
 /server/tmp/
 /server/log/
+/server/config/application.yml

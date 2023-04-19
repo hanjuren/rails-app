@@ -22,8 +22,9 @@ export default {
 
       const url = "/api/v1/auth/kakao_login";
       const params = {
-          code: this.authorize_code,
-          redirect_uri: 'http://localhost:8080/auth/kakao-callback'
+        code: this.authorize_code,
+        redirect_uri: 'http://localhost:8080/auth/kakao-callback',
+        provider: 'kakao'
       }
       this.$axios.post(url, params)
         .then((response) => {

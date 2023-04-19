@@ -55,3 +55,5 @@ gem 'devise'
 gem 'jsonapi-serializer'
 
 gem 'rest-client'
+
+gem 'figaro'
