@@ -6,25 +6,17 @@
 
 <script>
 export default {
-  data: () => {
-    return {
-      authorize_code: ""
-    }
-  },
-  created() {
-    this.getCodeToToken();
+  data() {
+    return {}
   },
   methods: {
     getCodeToToken: function() {
-      this.authorize_code = this.$route.query.code
-      console.log("hello world")
-      console.log(this.authorize_code);
+      const authorize_code = this.$route.query.code
 
-      const url = "/api/v1/auth/kakao_login";
+      const url = "/api/v1/sign_in_kakao"
       const params = {
-        code: this.authorize_code,
+        code: authorize_code,
         redirect_uri: 'http://localhost:8080/auth/kakao-callback',
-        provider: 'kakao'
       }
       this.$axios.post(url, params)
         .then((response) => {
@@ -34,6 +26,9 @@ export default {
           console.log(error);
         })
     }
+  },
+  mounted() {
+    this.getCodeToToken()
   },
 }
 </script>

@@ -10,7 +10,6 @@ class User < ApplicationRecord
         tokens = get_kakao_tokens(code, redirect_uri)
         data = get_kakao_user_data(tokens[:access_token])
 
-        Rails.logger.info(data.as_json)
         # email 동의 안할 수 있음
         uid = data['id']
         nick_name = data.dig('kakao_account', 'profile', 'nickname')
@@ -19,15 +18,13 @@ class User < ApplicationRecord
 
         user = User.find_by(email: email, uid: uid, provider: provider)
         if user.nil?
-          new_user = User.new(
+          user = User.new(
             email: email,
             uid: uid,
             provider: provider,
             nick_name: nick_name,
           )
-          new_user.save(validate: false) # 혹은 랜덤 비밀번호 넣을지 고민
-
-          user = new_user
+          user.save(validate: false) # 혹은 랜덤 비밀번호 넣을지 고민
         end
 
         user

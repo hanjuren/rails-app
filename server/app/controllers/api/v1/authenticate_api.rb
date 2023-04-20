@@ -55,6 +55,8 @@ module API
           params[:code],
           params[:redirect_uri],
         )
+        ip = request.env["action_dispatch.remote_ip"]
+        user.after_sign_in(ip)
 
         present user
       end
